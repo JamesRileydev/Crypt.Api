@@ -2,6 +2,9 @@
 using Crypt.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Crypt.Api.Controllers
 {
@@ -19,20 +22,33 @@ namespace Crypt.Api.Controllers
             Log = log;
         }
         [HttpPost("{file}/{method}")]
-        public IActionResult ProcessFile([FromRoute]string method, [FromForm] CryptRequest request)
+        public async ValueTask<IActionResult> ProcessFile([FromRoute]string method)
         {
-            if (request.File == null)
-            {
-                Log.LogError("Did not recieve file for encryption");
+            var rawFile = Request.Form?.Files;
 
-                return BadRequest("Did not recieve file for encryption");
+            if (rawFile == null)
+            {
+                Log.LogError("Did not recieve file for {method}", method);
+
+                return BadRequest($"Did not recieve file for {method}");
             }
 
-            Log.LogInformation($"Recieved {request.File.FileName} for encryption");
-         
-            request.Method = method;
+            var file = rawFile.First();
 
-            var (result, error) = CryptFileSvc.ProcessFile(request);
+            using var ms = new MemoryStream();
+
+            var newFile = file.CopyToAsync(ms).ConfigureAwait(false);
+
+            var request = new CryptRequest
+            {
+                File = new FilePayload
+                {
+                    FileContent = ms.ToArray()
+                },
+                Method = method
+            };
+
+            var (result, error) = await CryptFileSvc.ProcessFile(request).ConfigureAwait(false);
 
             if (error != null)
             {

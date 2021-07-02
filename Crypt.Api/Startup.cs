@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Crypt.Api
 {
@@ -22,6 +23,8 @@ namespace Crypt.Api
             services.AddControllers();
 
             services.AddSingleton(typeof(ICryptFileService), typeof(CryptFileService));
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

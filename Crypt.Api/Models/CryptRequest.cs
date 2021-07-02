@@ -5,6 +5,7 @@ namespace Crypt.Api.Models
     public class CryptRequest
     {
         public string Method { get; set; }
-        public IFormFile File { get; set; }
+
+        public FilePayload File { get; set; }
     }
 }

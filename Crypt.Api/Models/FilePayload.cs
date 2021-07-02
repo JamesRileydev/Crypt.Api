@@ -8,6 +8,8 @@ namespace Crypt.Api.Models
 
         public Memory<byte> FileContent { get; set; }
 
+        public string FileName { get; set; }
+
         public Memory<byte> Nonce { get; set; }
 
         public Memory<byte> Tag { get; set; }
