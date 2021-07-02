@@ -67,9 +67,9 @@ namespace Crypt.Api.Services
 
         private async ValueTask<(string, ServiceError)> GetRandomBytes()
         {
-            //Set up HttpClient here
+            //TODO - Set up HttpClient Factory to replace this 
             var request = new HttpRequestMessage(HttpMethod.Post, "http://192.168.0.10:8200/v1/sys/tools/random/44");
-            request.Headers.Add("X-Vault-Token", "s.COJdph5fLeTQZ8E1vW6TsiXq");
+            request.Headers.Add("X-Vault-Token", "");
 
             var client = HttpClient.CreateClient();
             HttpResponseMessage response;
